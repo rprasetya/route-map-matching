@@ -6,7 +6,7 @@ const src = (path: string) => fileURLToPath(new URL(`../src/${path}`, import.met
 
 export default defineConfig({
   root: fileURLToPath(new URL('.', import.meta.url)),
-  base: '/route-map-matching/',
+  base: process.env.SITE_BASE ?? './',
   resolve: {
     alias: [
       { find: /^route-map-matching\/tiles$/, replacement: src('tiles/index.ts') },
