@@ -16,7 +16,7 @@
   ],
   "license": "MIT",
   "author": "Raya Prasetya",
-  "homepage": "https://rprasetya.github.io/route-map-matching/",
+  "homepage": "https://route-map-matching.vercel.app/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rprasetya/route-map-matching.git"

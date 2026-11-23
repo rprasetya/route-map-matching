@@ -2,7 +2,7 @@
 
 Snap noisy GPS traces onto the roads they were driven on. A hidden Markov model with Viterbi decoding, written once in TypeScript and once in PHP, with identical results in the browser, Node.js and PHP. No routing server, no dependencies.
 
-**[Live demo and docs](https://rprasetya.github.io/route-map-matching/)**
+**[Live demo and docs](https://route-map-matching.vercel.app/)**
 
 - Over 100,000 GPS points per second in Node.js 22, 4 to 8 times faster than the production engine it was extracted from, with the same output.
 - Handles one-way streets, divided roads, GPS gaps, spikes, detours and false U-turns.
@@ -17,13 +17,15 @@ npm install route-map-matching
 composer require rprasetya/route-map-matching
 ```
 
-Node.js 18 or newer, any modern browser, or PHP 8.2 or newer. The npm package ships ES modules, CommonJS and type definitions, so it works from plain JavaScript too.
+Node.js 18 or newer, any modern browser, or PHP 8.2 or newer. The npm package ships ES modules, CommonJS and type definitions, so it works the same from plain JavaScript, from TypeScript and straight from a CDN.
 
 ## Quick start
 
-### TypeScript or JavaScript
+### JavaScript (ES modules)
 
-```ts
+Node.js 18 or newer, or any bundler such as Vite, webpack or esbuild:
+
+```js
 import { buildNetwork, matchCoordinates, matchPoints } from 'route-map-matching';
 
 const network = buildNetwork([
@@ -37,6 +39,58 @@ const detailed = matchPoints(gpsPoints.map(([lng, lat]) => ({ lng, lat })), netw
   include: (i) => speeds[i] > 2,
 });
 ```
+
+### JavaScript (CommonJS)
+
+```js
+const { buildNetwork, matchCoordinates } = require('route-map-matching');
+const { createTileSource } = require('route-map-matching/tiles');
+
+const network = buildNetwork(roads);
+const route = matchCoordinates(gpsPoints, network);
+```
+
+### In the browser without a build step
+
+The files in `dist` are plain ES modules with no dependencies, so a CDN can serve them straight to a `<script type="module">`:
+
+```html
+<script type="module">
+  import { buildNetwork, matchCoordinates } from 'https://cdn.jsdelivr.net/npm/route-map-matching@0.1/dist/index.js';
+  import { createTileSource } from 'https://cdn.jsdelivr.net/npm/route-map-matching@0.1/dist/tiles/index.js';
+
+  const network = buildNetwork(roads);
+  const route = matchCoordinates(gpsPoints, network);
+
+  const tiles = createTileSource({ url: 'https://tiles.example.org/{z}/{x}/{y}.pbf' });
+  const { coordinates } = await tiles.match(gpsPoints);
+</script>
+```
+
+`isLeftHandTraffic` lives in `dist/traffic-side.js`.
+
+### TypeScript
+
+The package ships its own type definitions, so there is nothing extra to install:
+
+```ts
+import { buildNetwork, matchPoints } from 'route-map-matching';
+import type { MatchedPoint, MatchOptions, RoadInput } from 'route-map-matching';
+
+const roads: RoadInput[] = [
+  { coordinates: [[106.822, -6.175], [106.830, -6.174]], oneway: 1 },
+  [[106.830, -6.174], [106.830, -6.180]],
+];
+
+const options: MatchOptions = { radius: 60 };
+const matched: MatchedPoint[] = matchPoints(
+  gpsPoints.map(([lng, lat]) => ({ lng, lat })),
+  buildNetwork(roads),
+  options,
+);
+```
+
+Exported types: `Network`, `Road`, `RoadInput`, `Oneway`, `MatchOptions`, `MatchedPoint`, `PointFlags`, `LngLat` and `Position`, plus `TileSource`, `TileSourceOptions`, `TileMatch` and `LoadedNetwork` from `route-map-matching/tiles`.
 
 ### PHP
 
@@ -65,9 +119,9 @@ const { coordinates, matched, complete } = await tiles.match(gpsPoints);
 
 ## API
 
-Coordinates are `[lng, lat]` in degrees. Every function exists in both languages with the same behaviour.
+Coordinates are `[lng, lat]` in degrees. Every function exists in JavaScript (with TypeScript types) and in PHP, with the same behaviour.
 
-| TypeScript | PHP | Returns |
+| JavaScript and TypeScript | PHP | Returns |
 |---|---|---|
 | `buildNetwork(roads)` | `Network::build($roads)` | A road graph. Build it once and reuse it for many traces. |
 | `matchPoints(points, network, options?)` | `Matcher::matchPoints($points, $network, $options)` | One entry per input point. |

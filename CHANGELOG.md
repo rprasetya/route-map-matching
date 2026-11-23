@@ -4,6 +4,11 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+### Changed
+
+- The README shows plain JavaScript use with ES modules, CommonJS and a CDN script tag with no build step, next to TypeScript.
+- The project homepage moved to https://route-map-matching.vercel.app/.
+
 ## [0.1.0] - 2026-11-23
 
 ### Added
