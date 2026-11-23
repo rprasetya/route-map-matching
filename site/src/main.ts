@@ -52,8 +52,42 @@ function codeTabs(): void {
   });
 }
 
+function mobileMenu(): void {
+  const button = document.getElementById('menu-button') as HTMLButtonElement | null;
+  const menu = document.getElementById('mobile-menu');
+  if (!button || !menu) return;
+  const links = Array.from(menu.querySelectorAll<HTMLAnchorElement>('a'));
+  const set = (open: boolean, returnFocus = false) => {
+    menu.hidden = !open;
+    button.setAttribute('aria-expanded', String(open));
+    document.documentElement.classList.toggle('menu-open', open);
+    if (open) links[0]?.focus({ preventScroll: true });
+    else if (returnFocus) button.focus({ preventScroll: true });
+  };
+  button.addEventListener('click', () => set(menu.hidden));
+  menu.addEventListener('click', (e) => {
+    if ((e.target as Element).closest('a')) set(false);
+  });
+  document.addEventListener('keydown', (e) => {
+    if (menu.hidden) return;
+    if (e.key === 'Escape') {
+      e.preventDefault();
+      set(false, true);
+    } else if (e.key === 'Tab') {
+      const order = [button, ...links];
+      const i = order.indexOf(document.activeElement as HTMLButtonElement | HTMLAnchorElement);
+      const next = e.shiftKey ? (i <= 0 ? order.length - 1 : i - 1) : i === order.length - 1 ? 0 : i + 1;
+      e.preventDefault();
+      order[next].focus({ preventScroll: true });
+    }
+  });
+  matchMedia('(min-width: 761px)').addEventListener('change', (e) => {
+    if (e.matches) set(false);
+  });
+}
+
 function currentSection(): void {
-  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.nav nav a[href^="#"]'));
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.nav-links a[href^="#"], .mobile-menu a[href^="#"]'));
   const sections = Array.from(document.querySelectorAll<HTMLElement>('main > section[id]'));
   if (!links.length || !sections.length) return;
   const mark = (id: string | null) => {
@@ -113,6 +147,7 @@ function sideMap(): void {
 copyButtons();
 codeTabs();
 languageMenu();
+mobileMenu();
 currentSection();
 startDemo();
 sideMap();

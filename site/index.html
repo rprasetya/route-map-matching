@@ -54,7 +54,7 @@
           <span>route-map-matching</span>
         </a>
         <div class="nav-end">
-          <nav aria-label="Sections" data-i18n-attr="aria-label:nav.sections">
+          <nav class="nav-links" aria-label="Sections" data-i18n-attr="aria-label:nav.sections">
             <a href="#quick-start" data-i18n="nav.quickStart">Quick start</a>
             <a href="#api" data-i18n="nav.api">API</a>
             <a href="#how" data-i18n="nav.how">How it works</a>
@@ -70,9 +70,24 @@
             <ul class="lang-menu" id="lang-menu" aria-labelledby="lang-button" hidden><!--lang-options--></ul>
           </div>
           <a class="gh" href="https://github.com/rprasetya/route-map-matching">GitHub</a>
+          <button type="button" class="menu-button" id="menu-button" aria-expanded="false" aria-controls="mobile-menu">
+            <span class="sr-only" data-i18n="nav.menu">Menu</span>
+            <svg class="open" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+            <svg class="close" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+          </button>
         </div>
       </div>
     </header>
+    <nav class="mobile-menu" id="mobile-menu" aria-label="Sections" data-i18n-attr="aria-label:nav.sections" hidden>
+      <div class="wrap">
+        <a href="#quick-start"><span data-i18n="nav.quickStart">Quick start</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg></a>
+        <a href="#api"><span data-i18n="nav.api">API</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg></a>
+        <a href="#how"><span data-i18n="nav.how">How it works</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg></a>
+        <a href="#benchmarks"><span data-i18n="nav.benchmarks">Benchmarks</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg></a>
+        <a href="#traffic-side"><span data-i18n="nav.trafficSide">Traffic side</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6" /></svg></a>
+        <a class="btn menu-gh" href="https://github.com/rprasetya/route-map-matching" data-i18n="hero.repo">Open the repository</a>
+      </div>
+    </nav>
 
     <main id="main">
       <section class="hero" id="top">

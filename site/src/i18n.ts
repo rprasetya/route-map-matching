@@ -19,13 +19,13 @@ export function languageMenu(): void {
   const open = (focus?: HTMLAnchorElement) => {
     menu.hidden = false;
     button.setAttribute('aria-expanded', 'true');
-    focus?.focus();
+    focus?.focus({ preventScroll: true });
   };
   const close = (returnFocus = false) => {
     if (menu.hidden) return;
     menu.hidden = true;
     button.setAttribute('aria-expanded', 'false');
-    if (returnFocus) button.focus();
+    if (returnFocus) button.focus({ preventScroll: true });
   };
 
   button.addEventListener('click', (e) => {
@@ -46,7 +46,7 @@ export function languageMenu(): void {
     const move: Record<string, number> = { ArrowDown: i + 1, ArrowUp: i - 1, Home: 0, End: links.length - 1 };
     if (e.key in move) {
       e.preventDefault();
-      links[(move[e.key] + links.length) % links.length].focus();
+      links[(move[e.key] + links.length) % links.length].focus({ preventScroll: true });
     } else if (e.key === 'Escape') {
       e.preventDefault();
       close(true);
