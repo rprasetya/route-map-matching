@@ -115,6 +115,8 @@ function sideMap(): void {
       style: 'https://tiles.openfreemap.org/styles/positron',
       center: [100, 5],
       zoom: 1.4,
+      renderWorldCopies: false,
+      maxBounds: [[-179.999, -60], [179.999, 84]],
       attributionControl: { compact: true },
       maxPitch: 0,
       dragRotate: false,
