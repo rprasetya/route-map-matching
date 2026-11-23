@@ -62,7 +62,13 @@ function sideMap(): void {
       center: [100, 5],
       zoom: 1.4,
       attributionControl: { compact: true },
+      maxPitch: 0,
+      dragRotate: false,
+      pitchWithRotate: false,
+      touchPitch: false,
     });
+    map.touchZoomRotate.disableRotation();
+    map.keyboard.disableRotation();
     map.on('load', () => {
       map.addSource('left', {
         type: 'geojson',

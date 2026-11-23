@@ -183,7 +183,13 @@ export function startDemo(): void {
     center: START,
     zoom: 14.3,
     attributionControl: { compact: true },
+    maxPitch: 0,
+    dragRotate: false,
+    pitchWithRotate: false,
+    touchPitch: false,
   });
+  map.touchZoomRotate.disableRotation();
+  map.keyboard.disableRotation();
   map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
   const panel = $('demo-panel');
   const noise = $<HTMLInputElement>('noise');
