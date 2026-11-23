@@ -11,7 +11,7 @@
   "nav.benchmarks": "Benchmarks",
   "nav.language": "Language",
   "hero.eyebrow": "Open source · MIT · JavaScript, TypeScript and PHP",
-  "hero.title": "Snap GPS traces to the roads they were driven on.",
+  "hero.title": "Snap GPS traces to the roads they were driven on",
   "hero.lead": "A hidden Markov model turns noisy fixes into the route a vehicle took. It runs in the browser, Node.js and PHP with the same results, no routing server and no dependencies.",
   "hero.fact": "<strong>Over 100,000 points per second</strong> in Node.js 22, up to eight times faster than the engine it grew out of.",
   "hero.install": "Install commands",

@@ -52,6 +52,26 @@ function codeTabs(): void {
   });
 }
 
+function currentSection(): void {
+  const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.nav nav a[href^="#"]'));
+  const sections = Array.from(document.querySelectorAll<HTMLElement>('main > section[id]'));
+  if (!links.length || !sections.length) return;
+  const mark = (id: string | null) => {
+    for (const link of links) {
+      if (link.getAttribute('href') === `#${id}`) link.setAttribute('aria-current', 'true');
+      else link.removeAttribute('aria-current');
+    }
+  };
+  const io = new IntersectionObserver(
+    (entries) => {
+      const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+      if (visible) mark(visible.target.id);
+    },
+    { rootMargin: '-40% 0px -55% 0px' },
+  );
+  for (const section of sections) io.observe(section);
+}
+
 function sideMap(): void {
   const container = document.getElementById('side-map');
   if (!container) return;
@@ -93,5 +113,6 @@ function sideMap(): void {
 copyButtons();
 codeTabs();
 languageMenu();
+currentSection();
 startDemo();
 sideMap();

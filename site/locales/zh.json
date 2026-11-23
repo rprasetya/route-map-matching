@@ -11,7 +11,7 @@
   "nav.benchmarks": "性能测试",
   "nav.language": "语言",
   "hero.eyebrow": "开源 · MIT · JavaScript、TypeScript 和 PHP",
-  "hero.title": "把 GPS 轨迹贴合到车辆真正行驶过的道路上。",
+  "hero.title": "把 GPS 轨迹贴合到车辆真正行驶过的道路上",
   "hero.lead": "隐马尔可夫模型把带噪声的定位点还原成车辆实际走过的路线。在浏览器、Node.js 和 PHP 中运行，结果一致，不需要路径规划服务器，也没有任何依赖。",
   "hero.fact": "在 Node.js 22 中<strong>每秒处理超过 10 万个点</strong>，比它脱胎的原始引擎快至八倍。",
   "hero.install": "安装命令",

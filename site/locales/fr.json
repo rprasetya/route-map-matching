@@ -11,7 +11,7 @@
   "nav.benchmarks": "Performances",
   "nav.language": "Langue",
   "hero.eyebrow": "Open source · MIT · JavaScript, TypeScript et PHP",
-  "hero.title": "Recalez les traces GPS sur les routes réellement empruntées.",
+  "hero.title": "Recalez les traces GPS sur les routes réellement empruntées",
   "hero.lead": "Un modèle de Markov caché transforme des positions bruitées en itinéraire réellement suivi par le véhicule. Il tourne dans le navigateur, Node.js et PHP avec les mêmes résultats, sans serveur de routage ni dépendance.",
   "hero.fact": "<strong>Plus de 100 000 points par seconde</strong> dans Node.js 22, jusqu'à huit fois plus rapide que le moteur dont il est issu.",
   "hero.install": "Commandes d'installation",

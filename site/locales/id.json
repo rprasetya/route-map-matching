@@ -11,7 +11,7 @@
   "nav.benchmarks": "Benchmark",
   "nav.language": "Bahasa",
   "hero.eyebrow": "Open source · MIT · JavaScript, TypeScript dan PHP",
-  "hero.title": "Tempelkan jejak GPS ke jalan yang benar-benar dilalui.",
+  "hero.title": "Tempelkan jejak GPS ke jalan yang benar-benar dilalui",
   "hero.lead": "Model Markov tersembunyi mengubah titik GPS yang berisik menjadi rute yang ditempuh kendaraan. Berjalan di browser, Node.js dan PHP dengan hasil yang sama, tanpa server routing dan tanpa dependensi.",
   "hero.fact": "<strong>Lebih dari 100.000 titik per detik</strong> di Node.js 22, hingga delapan kali lebih cepat dari mesin asalnya.",
   "hero.install": "Perintah instalasi",

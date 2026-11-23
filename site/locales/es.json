@@ -11,7 +11,7 @@
   "nav.benchmarks": "Rendimiento",
   "nav.language": "Idioma",
   "hero.eyebrow": "Código abierto · MIT · JavaScript, TypeScript y PHP",
-  "hero.title": "Ajusta trazas GPS a las calles por donde pasó el vehículo.",
+  "hero.title": "Ajusta trazas GPS a las calles por donde pasó el vehículo",
   "hero.lead": "Un modelo oculto de Márkov convierte posiciones con ruido en la ruta que siguió el vehículo. Funciona en el navegador, Node.js y PHP con los mismos resultados, sin servidor de rutas y sin dependencias.",
   "hero.fact": "<strong>Más de 100.000 puntos por segundo</strong> en Node.js 22, hasta ocho veces más rápido que el motor del que nació.",
   "hero.install": "Comandos de instalación",

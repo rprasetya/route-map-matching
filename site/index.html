@@ -79,7 +79,7 @@
         <div class="wrap hero-grid">
           <div class="hero-copy">
             <p class="eyebrow" data-i18n="hero.eyebrow">Open source · MIT · JavaScript, TypeScript and PHP</p>
-            <h1 data-i18n="hero.title">Snap GPS traces to the roads they were driven on.</h1>
+            <h1 data-i18n="hero.title">Snap GPS traces to the roads they were driven on</h1>
             <p class="lead" data-i18n="hero.lead">A hidden Markov model turns noisy fixes into the route a vehicle took. It runs in the browser, Node.js and PHP with the same results, no routing server and no dependencies.</p>
             <p class="fact" data-i18n-html="hero.fact"><strong>Over 100,000 points per second</strong> in Node.js 22, up to eight times faster than the engine it grew out of.</p>
             <div class="install" role="group" aria-label="Install commands" data-i18n-attr="aria-label:hero.install">
@@ -105,8 +105,8 @@
                 <span><b class="line matched"></b><span data-i18n="demo.legendMatched">Matched route</span></span>
                 <span><b class="line truth"></b><span id="legend-truth" data-i18n="demo.legendDriven">Driven route</span></span>
               </div>
-              <label class="slider drive-only"><span data-i18n="demo.noise">Noise</span> <output id="noise-out">12 m</output><input id="noise" type="range" min="2" max="30" value="12" /></label>
-              <label class="slider drive-only"><span data-i18n="demo.spacing">Spacing</span> <output id="spacing-out">20 m</output><input id="spacing" type="range" min="8" max="60" value="20" /></label>
+              <label class="slider drive-only"><span id="noise-label" data-i18n="demo.noise">Noise</span> <output id="noise-out" for="noise">12 m</output><input id="noise" type="range" min="2" max="30" value="12" aria-labelledby="noise-label noise-out" /></label>
+              <label class="slider drive-only"><span id="spacing-label" data-i18n="demo.spacing">Spacing</span> <output id="spacing-out" for="spacing">20 m</output><input id="spacing" type="range" min="8" max="60" value="20" aria-labelledby="spacing-label spacing-out" /></label>
               <p class="draw-hint draw-only" data-i18n="demo.hint">Click or tap the map to place GPS points in the order they were driven. Drag a point to move it. The route updates after every change.</p>
               <div class="demo-stats" aria-live="polite">
                 <div><span data-i18n="demo.points">Points</span><strong id="stat-points">–</strong></div>
@@ -298,6 +298,10 @@ const { coordinates, complete } = await tiles.match(gpsPoints);</code></pre>
               <li data-i18n-html="side.size"><strong>32 KB</strong> gzipped, decoded on first use</li>
               <li data-i18n-html="side.lookup"><strong>2 µs</strong> per lookup</li>
             </ul>
+            <div class="actions">
+              <a class="btn primary" href="#quick-start" data-i18n="hero.quickStart">Read the quick start</a>
+              <a class="btn" href="https://github.com/rprasetya/route-map-matching" data-i18n="hero.repo">Open the repository</a>
+            </div>
           </div>
           <div id="side-map" class="side-map" aria-label="Map of left-hand traffic regions" data-i18n-attr="aria-label:side.map"></div>
         </div>
