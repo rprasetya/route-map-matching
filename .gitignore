@@ -1,0 +1,10 @@
+node_modules/
+dist/
+vendor/
+coverage/
+.phpunit.cache/
+.phpunit.result.cache
+site/dist/
+*.log
+.DS_Store
+composer.lock

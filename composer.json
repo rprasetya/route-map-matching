@@ -1,0 +1,44 @@
+{
+    "name": "rprasetya/route-map-matching",
+    "description": "Fast, dependency-free GPS map matching: snap noisy GPS traces onto a road network with a hidden Markov model. PHP port of the route-map-matching npm package with identical results.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "map-matching",
+        "gps",
+        "snap-to-road",
+        "hmm",
+        "viterbi",
+        "routing",
+        "geospatial"
+    ],
+    "homepage": "https://github.com/rprasetya/route-map-matching",
+    "authors": [
+        {
+            "name": "Raya Prasetya"
+        }
+    ],
+    "require": {
+        "php": "^8.2"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^11.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "RouteMapMatching\\": "php/src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "RouteMapMatching\\Tests\\": "php/tests/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "bench": "php php/bench.php"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

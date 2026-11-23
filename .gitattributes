@@ -1,0 +1,15 @@
+* text=auto eol=lf
+/node_modules export-ignore
+/site export-ignore
+/scripts export-ignore
+/src export-ignore
+/tests export-ignore
+/php/tests export-ignore
+/php/bench.php export-ignore
+/.github export-ignore
+/package.json export-ignore
+/package-lock.json export-ignore
+/tsconfig.json export-ignore
+/tsup.config.ts export-ignore
+/phpunit.xml.dist export-ignore
+/.editorconfig export-ignore
