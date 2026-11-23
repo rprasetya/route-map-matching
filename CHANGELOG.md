@@ -4,6 +4,12 @@ All notable changes to this project are documented here. The format follows [Kee
 
 ## [Unreleased]
 
+## [1.0.1] - 2026-11-23
+
+### Changed
+
+- Releases are now published to npm through trusted publishing (OpenID Connect) with provenance, so no npm access token is involved. The library code is the same as 1.0.0.
+
 ## [1.0.0] - 2026-11-23
 
 ### Added
@@ -16,5 +22,6 @@ All notable changes to this project are documented here. The format follows [Kee
 - Automatic left-hand-traffic detection for 75 countries and territories, built from Natural Earth, with `isLeftHandTraffic`, `leftHandTrafficFlags` and `leftHandTrafficPolygons`.
 - Benchmarks, GitHub Actions for CI and releases, and a documentation site at https://route-map-matching.vercel.app/ in eight languages with a live demo where you can simulate a drive or place your own GPS points.
 
-[Unreleased]: https://github.com/rprasetya/route-map-matching/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/rprasetya/route-map-matching/compare/v1.0.1...HEAD
+[1.0.1]: https://github.com/rprasetya/route-map-matching/compare/v1.0.0...v1.0.1
 [1.0.0]: https://github.com/rprasetya/route-map-matching/releases/tag/v1.0.0
