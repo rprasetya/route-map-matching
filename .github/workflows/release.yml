@@ -18,7 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       TAG: ${{ inputs.tag || github.ref_name }}
-      HAS_NPM_TOKEN: ${{ secrets.NPM_TOKEN != '' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -46,11 +45,7 @@ jobs:
         with:
           tag_name: ${{ env.TAG }}
           body_path: notes.md
-      - name: Publish to npm
-        if: env.HAS_NPM_TOKEN == 'true'
+      - name: Use an npm that supports trusted publishing
+        run: npm install -g npm@latest
+      - name: Publish to npm with trusted publishing
         run: npm publish --provenance --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-      - name: Skip npm without a token
-        if: env.HAS_NPM_TOKEN != 'true'
-        run: echo "NPM_TOKEN is not set, so the package was not published to npm."
