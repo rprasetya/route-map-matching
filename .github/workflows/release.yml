@@ -3,6 +3,11 @@ name: Release
 on:
   push:
     tags: ['v*']
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Tag to release and publish, for example v0.1.0
+        required: true
 
 permissions:
   contents: write
@@ -12,9 +17,12 @@ jobs:
   release:
     runs-on: ubuntu-latest
     env:
-      NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      TAG: ${{ inputs.tag || github.ref_name }}
+      HAS_NPM_TOKEN: ${{ secrets.NPM_TOKEN != '' }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -25,7 +33,7 @@ jobs:
           php-version: '8.3'
           coverage: none
       - name: Check the tag matches package.json
-        run: test "v$(node -p "require('./package.json').version")" = "$GITHUB_REF_NAME"
+        run: test "v$(node -p "require('./package.json').version")" = "$TAG"
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
@@ -33,10 +41,16 @@ jobs:
       - run: composer install --no-interaction --no-progress
       - run: vendor/bin/phpunit
       - name: Release notes from the changelog
-        run: awk -v v="${GITHUB_REF_NAME#v}" 'index($0, "## [" v "]") == 1 {f = 1; next} /^## \[/ {f = 0} f' CHANGELOG.md > notes.md
+        run: awk -v v="${TAG#v}" 'index($0, "## [" v "]") == 1 {f = 1; next} /^## \[/ {f = 0} f' CHANGELOG.md > notes.md
       - uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ env.TAG }}
           body_path: notes.md
       - name: Publish to npm
-        if: env.NODE_AUTH_TOKEN != ''
+        if: env.HAS_NPM_TOKEN == 'true'
         run: npm publish --provenance --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      - name: Skip npm without a token
+        if: env.HAS_NPM_TOKEN != 'true'
+        run: echo "NPM_TOKEN is not set, so the package was not published to npm."
