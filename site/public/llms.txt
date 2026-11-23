@@ -1,0 +1,28 @@
+# route-map-matching
+
+> Open-source GPS map matching library for JavaScript, TypeScript and PHP. It snaps noisy GPS traces onto the roads a vehicle actually drove, using a hidden Markov model with Viterbi decoding, and runs in the browser, Node.js or PHP with identical results, no routing server and no dependencies. MIT licensed.
+
+Key facts:
+
+- Install with `npm install route-map-matching` (ES modules, CommonJS, TypeScript types, also loadable from a CDN with no build step) or `composer require rprasetya/route-map-matching` (PHP 8.2 or newer).
+- Over 100,000 GPS points per second in Node.js 22; 1,000 points match in about 16 ms and 20,000 points in about 150 ms on a laptop. 4.5 to 8 times faster than the production engine it was extracted from, with the same output.
+- Main functions: `buildNetwork(roads)`, `matchPoints(points, network, options)`, `matchCoordinates(coordinates, network, options)`, `snapToRoad(network, [lng, lat], radius)`, and `createTileSource({ url })` to read roads straight from Mapbox vector tiles (OpenMapTiles and Protomaps schemas). PHP has the same API as `Network::build` and `Matcher::matchPoints`.
+- Handles one-way streets, divided roads, GPS gaps, spikes, detours and false U-turns. Knows which side of the road traffic drives on in 75 countries and territories and uses it by default.
+- Coordinates are `[lng, lat]` in degrees.
+- Unlike the map matching services of OSRM, Valhalla or GraphHopper, it needs no server: roads come from your own data or from the vector tiles your map already loads, so matching can run on the client, in a serverless function or inside a PHP app.
+
+## Docs
+
+- [README](https://github.com/rprasetya/route-map-matching/blob/main/README.md): install, quick start in JavaScript, TypeScript and PHP, API, options, how it works, benchmarks
+- [Full documentation as plain text](https://route-map-matching.vercel.app/llms-full.txt): the README in one file
+- [Live demo and documentation site](https://route-map-matching.vercel.app/): simulate a drive or place your own GPS points and watch them snap to the road
+- [Changelog](https://github.com/rprasetya/route-map-matching/blob/main/CHANGELOG.md)
+
+## Source and packages
+
+- [GitHub repository](https://github.com/rprasetya/route-map-matching)
+- [npm package](https://www.npmjs.com/package/route-map-matching)
+
+## Optional
+
+- The documentation site is available in English, Indonesian, Chinese, Hindi, Spanish, French, Arabic and Portuguese at /, /id/, /zh/, /hi/, /es/, /fr/, /ar/ and /pt/.
