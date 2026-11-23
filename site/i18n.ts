@@ -114,9 +114,11 @@ function runtime(t: Dict): string {
 }
 
 function options(current: Language): string {
-  return LANGUAGES.map(
-    (l) => `<option value="${pathOf(l.code)}" lang="${l.tag}" data-code="${l.code}"${l.code === current.code ? ' selected' : ''}>${l.name}</option>`,
-  ).join('');
+  const check = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5" /></svg>';
+  return LANGUAGES.map((l) => {
+    const active = l.code === current.code;
+    return `<li><a href="${pathOf(l.code)}" hreflang="${l.tag}" lang="${l.tag}" data-code="${l.code}"${active ? ' aria-current="true"' : ''}><span>${l.name}</span>${active ? check : ''}</a></li>`;
+  }).join('');
 }
 
 export function render(html: string, code: string): string {
@@ -142,8 +144,8 @@ export function render(html: string, code: string): string {
       return result;
     })
     .replace('<!--lang-options-->', options(lang))
-    .replace(/(<span class="lang-name">)[^<]*(<\/span>)/, `$1${lang.name}$2`)
-    .replace(/(<span class="lang-code">)[^<]*(<\/span>)/, `$1${lang.code.toUpperCase()}$2`)
+    .replace(/(<span class="lang-name"[^>]*>)[^<]*(<\/span>)/, `$1${lang.name}$2`)
+    .replace(/(<span class="lang-code"[^>]*>)[^<]*(<\/span>)/, `$1${lang.code.toUpperCase()}$2`)
     .replace('<!--seo-->', seo(lang, t))
     .replace('</head>', `    ${runtime(t)}\n  </head>`)
     .replace(/\sdata-i18n(?:-html|-attr)?="[^"]*"/g, '');
