@@ -356,10 +356,67 @@ td code {
   overflow: hidden;
 }
 
+.demo-stage {
+  position: relative;
+}
+
 .demo-map {
   height: min(56svh, 520px);
   min-height: 340px;
   background: #ecebe6;
+}
+
+.mode {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  display: inline-flex;
+  gap: 2px;
+  padding: 4px;
+  border-radius: 999px;
+  background: var(--surface);
+  box-shadow: 0 0 0 1px var(--line-strong), 0 6px 16px -10px rgba(23, 24, 27, 0.4);
+}
+
+.mode button {
+  min-height: 32px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: 500 13px/1 'Geist', ui-sans-serif, system-ui, sans-serif;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.mode button:hover {
+  color: var(--ink);
+}
+
+.mode button[aria-pressed='true'] {
+  background: var(--ink);
+  color: #fff;
+}
+
+.mode button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.demo-panel[data-mode='drive'] .draw-only,
+.demo-panel[data-mode='draw'] .drive-only {
+  display: none;
+}
+
+.draw-hint {
+  grid-area: 1 / 2 / 2 / 4;
+  align-self: start;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--muted);
 }
 
 .demo-panel {
@@ -459,10 +516,17 @@ td code {
   white-space: nowrap;
 }
 
-#new-route {
+.demo-actions {
   grid-area: button;
   justify-self: end;
   align-self: end;
+  display: flex;
+  gap: 8px;
+}
+
+#undo:disabled,
+#clear:disabled {
+  cursor: default;
 }
 
 .code-grid {
@@ -493,7 +557,54 @@ td code {
   font-size: 13px;
 }
 
+.code-head.tabbed {
+  gap: 12px;
+  padding-left: 8px;
+}
+
+.code-tabs {
+  display: flex;
+  gap: 2px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.code-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.code-tabs button {
+  flex: none;
+  min-height: 32px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: #9a9da4;
+  font: 500 13px/1 'Geist', sans-serif;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.code-tabs button:hover {
+  color: #eceef1;
+}
+
+.code-tabs button[aria-selected='true'] {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.code-tabs button:focus-visible,
+.copy-code:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
 .copy-code {
+  flex: none;
   min-height: 32px;
   padding: 0 12px;
   border: 0;
@@ -813,8 +924,14 @@ td code {
     flex-wrap: wrap;
     gap: 4px 14px;
   }
-  #new-route {
+  .draw-hint {
+    grid-area: 2 / 1 / 3 / 3;
+  }
+  .demo-actions {
     justify-self: stretch;
+  }
+  .demo-actions .btn {
+    flex: 1;
   }
   .steps {
     grid-template-columns: minmax(0, 1fr);

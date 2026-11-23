@@ -19,9 +19,35 @@ function copyButtons(): void {
   });
   document.querySelectorAll<HTMLButtonElement>('.copy-code').forEach((b) => {
     b.addEventListener('click', async () => {
-      const code = b.closest('.code')?.querySelector('code')?.textContent ?? '';
+      const code = b.closest('.code')?.querySelector('pre:not([hidden]) code')?.textContent ?? '';
       await navigator.clipboard?.writeText(code);
       flash(b, 'Copied');
+    });
+  });
+}
+
+function codeTabs(): void {
+  document.querySelectorAll<HTMLElement>('[role="tablist"]').forEach((list) => {
+    const tabs = Array.from(list.querySelectorAll<HTMLButtonElement>('[role="tab"]'));
+    const select = (tab: HTMLButtonElement) => {
+      for (const t of tabs) {
+        const active = t === tab;
+        t.setAttribute('aria-selected', String(active));
+        t.tabIndex = active ? 0 : -1;
+        const panel = document.getElementById(t.getAttribute('aria-controls') ?? '');
+        if (panel) panel.hidden = !active;
+      }
+    };
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(tab));
+      tab.addEventListener('keydown', (e) => {
+        const step = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (!step) return;
+        e.preventDefault();
+        const next = tabs[(i + step + tabs.length) % tabs.length];
+        select(next);
+        next.focus();
+      });
     });
   });
 }
@@ -36,7 +62,6 @@ function sideMap(): void {
       center: [100, 5],
       zoom: 1.4,
       attributionControl: { compact: true },
-      cooperativeGestures: true,
     });
     map.on('load', () => {
       map.addSource('left', {
@@ -60,5 +85,6 @@ function sideMap(): void {
 }
 
 copyButtons();
+codeTabs();
 startDemo();
 sideMap();

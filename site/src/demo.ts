@@ -148,6 +148,31 @@ function median(values: number[]): number {
 const collection = (features: GeoJSON.Feature[]): GeoJSON.FeatureCollection => ({ type: 'FeatureCollection', features });
 const line = (coordinates: [number, number][]): GeoJSON.Feature => ({ type: 'Feature', properties: {}, geometry: { type: 'LineString', coordinates } });
 
+const dots = (list: [number, number][]): GeoJSON.FeatureCollection =>
+  collection(list.map((p) => ({ type: 'Feature', properties: {}, geometry: { type: 'Point', coordinates: p } })));
+
+const formatMs = (ms: number) => `${ms < 10 ? ms.toFixed(1) : ms.toFixed(0)} ms`;
+const formatLength = (m: number) => (m < 1000 ? `${Math.round(m)} m` : `${(m / 1000).toFixed(2)} km`);
+
+type Mode = 'drive' | 'draw';
+
+const HIT_PX = 14;
+
+function snap(points: [number, number][], network: Network) {
+  const t = performance.now();
+  const matched = matchPoints(points.map(([lng, lat]): LngLat => ({ lng, lat })), network);
+  const ms = performance.now() - t;
+  const route: [number, number][] = [];
+  const snapped: [number, number][] = [];
+  for (const m of matched) {
+    if (m.skipped) continue;
+    for (const q of m.path) route.push([q.lng, q.lat]);
+    route.push([m.position.lng, m.position.lat]);
+    snapped.push([m.position.lng, m.position.lat]);
+  }
+  return { route, snapped, ms };
+}
+
 export function startDemo(): void {
   const container = $('demo-map');
   if (!container) return;
@@ -157,45 +182,80 @@ export function startDemo(): void {
     center: START,
     zoom: 14.3,
     attributionControl: { compact: true },
-    cooperativeGestures: true,
   });
   map.addControl(new maplibregl.NavigationControl({ showCompass: false }), 'top-right');
+  const panel = $('demo-panel');
   const noise = $<HTMLInputElement>('noise');
   const spacing = $<HTMLInputElement>('spacing');
   const button = $<HTMLButtonElement>('new-route');
+  const undo = $<HTMLButtonElement>('undo');
+  const clear = $<HTMLButtonElement>('clear');
+  const modes = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-mode-option]'));
   let source: TileSource | null = null;
-  let network: Network | null = null;
+  let mode: Mode = 'drive';
+  let driveNetwork: Network | null = null;
+  let driveTrace: Trace | null = null;
   let truth: [number, number][] = [];
   let busy = false;
+  let drawNetwork: Network | null = null;
+  let drawn: [number, number][] = [];
+  let loadSeq = 0;
+  let dragIndex = -1;
+  let dragged = false;
 
   const set = (id: string, data: GeoJSON.FeatureCollection) => (map.getSource(id) as GeoJSONSource | undefined)?.setData(data);
+  const stats = (points: string, time: string, third: string) => {
+    $('stat-points').textContent = points;
+    $('stat-time').textContent = time;
+    $('stat-third').textContent = third;
+  };
 
-  const render = (trace: Trace) => {
-    if (!network) return;
-    const t = performance.now();
-    const matched = matchPoints(trace.points.map(([lng, lat]): LngLat => ({ lng, lat })), network);
-    const ms = performance.now() - t;
-    const route: [number, number][] = [];
-    const after: number[] = [];
-    for (const m of matched) {
-      if (m.skipped) continue;
-      for (const q of m.path) route.push([q.lng, q.lat]);
-      route.push([m.position.lng, m.position.lat]);
-      after.push(distanceToLine([m.position.lng, m.position.lat], trace.truth));
-    }
+  const renderDrive = (trace: Trace) => {
+    driveTrace = trace;
+    if (!driveNetwork || mode !== 'drive') return;
+    const { route, snapped, ms } = snap(trace.points, driveNetwork);
     const before = median(trace.points.map((p) => distanceToLine(p, trace.truth)));
+    const after = median(snapped.map((p) => distanceToLine(p, trace.truth)));
     set('truth', collection([line(trace.truth)]));
-    set('fixes', collection(trace.points.map((p) => ({ type: 'Feature', properties: {}, geometry: { type: 'Point', coordinates: p } }))));
+    set('fixes', dots(trace.points));
     set('matched', collection([line(route)]));
-    $('stat-points').textContent = String(trace.points.length);
-    $('stat-time').textContent = `${ms < 10 ? ms.toFixed(1) : ms.toFixed(0)} ms`;
-    $('stat-error').textContent = `${before.toFixed(1)} → ${median(after).toFixed(1)} m`;
+    stats(String(trace.points.length), formatMs(ms), `${before.toFixed(1)} → ${after.toFixed(1)} m`);
+  };
+
+  const renderDraw = () => {
+    if (mode !== 'draw') return;
+    undo.disabled = clear.disabled = drawn.length === 0;
+    set('truth', collection(drawn.length > 1 ? [line(drawn)] : []));
+    set('fixes', dots(drawn));
+    if (!drawNetwork || !drawn.length) {
+      set('matched', collection([]));
+      stats(String(drawn.length), '–', '–');
+      return;
+    }
+    const { route, ms } = snap(drawn, drawNetwork);
+    set('matched', collection(route.length > 1 ? [line(route)] : []));
+    stats(String(drawn.length), formatMs(ms), route.length > 1 ? formatLength(lengthOf(route)) : '–');
+  };
+
+  const loadDraw = async () => {
+    renderDraw();
+    if (!source || !drawn.length) return;
+    const seq = ++loadSeq;
+    try {
+      const loaded = await source.loadNetwork(drawn);
+      if (seq !== loadSeq) return;
+      drawNetwork = loaded.network;
+      renderDraw();
+    } catch (error) {
+      console.error(error);
+      if (seq === loadSeq && mode === 'draw') $('stat-third').textContent = 'Road tiles unavailable';
+    }
   };
 
   const resample = () => {
     $('noise-out').textContent = `${noise.value} m`;
     $('spacing-out').textContent = `${spacing.value} m`;
-    if (truth.length > 1) render({ truth, points: sample(truth, Number(spacing.value), Number(noise.value)) });
+    if (truth.length > 1) renderDrive({ truth, points: sample(truth, Number(spacing.value), Number(noise.value)) });
   };
 
   const newRoute = async () => {
@@ -210,10 +270,10 @@ export function startDemo(): void {
       const corners: [number, number][] = [];
       for (let x = -1; x <= 1; x += 1) for (let y = -1; y <= 1; y += 1) corners.push([center[0] + x * span, center[1] + y * span]);
       const loaded = await source.loadNetwork(corners);
-      network = loaded.network;
-      if (network) truth = drive(network, center);
+      driveNetwork = loaded.network;
+      if (driveNetwork) truth = drive(driveNetwork, center);
       resample();
-      if (truth.length > 1) {
+      if (truth.length > 1 && mode === 'drive') {
         const lngs = truth.map((p) => p[0]);
         const lats = truth.map((p) => p[1]);
         map.fitBounds(
@@ -221,18 +281,111 @@ export function startDemo(): void {
             [Math.min(...lngs), Math.min(...lats)],
             [Math.max(...lngs), Math.max(...lats)],
           ],
-          { padding: { top: 48, bottom: 48, left: 48, right: 48 }, duration: 600, maxZoom: 16 },
+          { padding: { top: 56, bottom: 48, left: 48, right: 48 }, duration: 600, maxZoom: 16 },
         );
       }
     } catch (error) {
       console.error(error);
-      $('stat-error').textContent = 'Road tiles unavailable';
+      if (mode === 'drive') $('stat-third').textContent = 'Road tiles unavailable';
     } finally {
       busy = false;
       button.disabled = false;
       button.textContent = 'Drive a new route';
     }
   };
+
+  const setMode = (next: Mode) => {
+    if (next === mode) return;
+    mode = next;
+    panel.dataset.mode = next;
+    for (const option of modes) option.setAttribute('aria-pressed', String(option.dataset.modeOption === next));
+    $('legend-truth').textContent = next === 'drive' ? 'Driven route' : 'Point order';
+    $('stat-third-label').textContent = next === 'drive' ? 'Typical error' : 'Route length';
+    map.getCanvas().style.cursor = next === 'draw' ? 'crosshair' : '';
+    if (map.getLayer('fixes')) {
+      map.setPaintProperty('fixes', 'circle-radius', next === 'draw' ? 5.5 : 3.4);
+      map.setPaintProperty('fixes', 'circle-stroke-width', next === 'draw' ? 2 : 1.2);
+    }
+    if (next === 'draw') {
+      map.doubleClickZoom.disable();
+      loadDraw();
+      return;
+    }
+    map.doubleClickZoom.enable();
+    loadSeq += 1;
+    if (driveTrace) renderDrive(driveTrace);
+    else {
+      for (const id of ['truth', 'matched', 'fixes']) set(id, collection([]));
+      stats('–', '–', '–');
+    }
+  };
+
+  const nearest = (point: { x: number; y: number }) => {
+    let best = -1;
+    let bestDistance = HIT_PX * HIT_PX;
+    drawn.forEach((p, i) => {
+      const s = map.project(p);
+      const d = (s.x - point.x) ** 2 + (s.y - point.y) ** 2;
+      if (d < bestDistance) {
+        bestDistance = d;
+        best = i;
+      }
+    });
+    return best;
+  };
+
+  let frame = 0;
+  const moveFix = (lngLat: { lng: number; lat: number }) => {
+    drawn[dragIndex] = [lngLat.lng, lngLat.lat];
+    dragged = true;
+    cancelAnimationFrame(frame);
+    frame = requestAnimationFrame(renderDraw);
+  };
+  const endDrag = () => {
+    if (dragIndex < 0) return;
+    dragIndex = -1;
+    map.getCanvas().style.cursor = mode === 'draw' ? 'crosshair' : '';
+    if (dragged) loadDraw();
+  };
+
+  map.on('mousedown', (e) => {
+    if (mode !== 'draw') return;
+    const i = nearest(e.point);
+    if (i < 0) return;
+    e.preventDefault();
+    dragIndex = i;
+    dragged = false;
+    map.getCanvas().style.cursor = 'grabbing';
+  });
+  map.on('touchstart', (e) => {
+    if (mode !== 'draw' || e.points.length !== 1) return;
+    const i = nearest(e.point);
+    if (i < 0) return;
+    e.preventDefault();
+    dragIndex = i;
+    dragged = false;
+  });
+  map.on('mousemove', (e) => {
+    if (mode !== 'draw') return;
+    if (dragIndex >= 0) moveFix(e.lngLat);
+    else map.getCanvas().style.cursor = nearest(e.point) >= 0 ? 'grab' : 'crosshair';
+  });
+  map.on('touchmove', (e) => {
+    if (dragIndex >= 0) moveFix(e.lngLat);
+  });
+  map.on('mouseup', endDrag);
+  map.on('touchend', endDrag);
+  map.on('touchcancel', endDrag);
+  map.on('click', (e) => {
+    if (mode !== 'draw') return;
+    if (dragged) {
+      dragged = false;
+      return;
+    }
+    if (nearest(e.point) >= 0) return;
+    drawn.push([e.lngLat.lng, e.lngLat.lat]);
+    loadDraw();
+  });
 
   map.on('load', () => {
     for (const id of ['truth', 'matched', 'fixes']) map.addSource(id, { type: 'geojson', data: collection([]) });
@@ -244,7 +397,7 @@ export function startDemo(): void {
     const id = Object.keys(sources).find((k) => sources[k].type === 'vector');
     const tiles = id ? (map.getSource(id) as unknown as { tiles?: string[] }).tiles : undefined;
     if (!tiles?.length) {
-      $('stat-error').textContent = 'Road tiles unavailable';
+      $('stat-third').textContent = 'Road tiles unavailable';
       return;
     }
     source = createTileSource({ url: tiles[0], zoom: 14 });
@@ -259,4 +412,14 @@ export function startDemo(): void {
   noise.addEventListener('input', later);
   spacing.addEventListener('input', later);
   button.addEventListener('click', newRoute);
+  undo.addEventListener('click', () => {
+    drawn.pop();
+    loadDraw();
+  });
+  clear.addEventListener('click', () => {
+    drawn = [];
+    loadSeq += 1;
+    renderDraw();
+  });
+  for (const option of modes) option.addEventListener('click', () => setMode(option.dataset.modeOption as Mode));
 }

@@ -36,7 +36,7 @@
       <section class="hero" id="top">
         <div class="wrap hero-grid">
           <div class="hero-copy">
-            <p class="eyebrow">Open source · MIT · TypeScript and PHP</p>
+            <p class="eyebrow">Open source · MIT · JavaScript, TypeScript and PHP</p>
             <h1>Snap GPS traces to the roads they were driven on.</h1>
             <p class="lead">A hidden Markov model turns noisy fixes into the route a vehicle took. It runs in the browser, Node.js and PHP with the same results, no routing server and no dependencies.</p>
             <p class="fact"><strong>Over 100,000 points per second</strong> in Node.js 22, up to eight times faster than the engine it grew out of.</p>
@@ -50,21 +50,32 @@
             </div>
           </div>
           <div class="demo" aria-label="Live map matching demo">
-            <div id="demo-map" class="demo-map"></div>
-            <div class="demo-panel">
+            <div class="demo-stage">
+              <div id="demo-map" class="demo-map"></div>
+              <div class="mode" role="group" aria-label="Demo mode">
+                <button type="button" data-mode-option="drive" aria-pressed="true">Simulated drive</button>
+                <button type="button" data-mode-option="draw" aria-pressed="false">Place points</button>
+              </div>
+            </div>
+            <div id="demo-panel" class="demo-panel" data-mode="drive">
               <div class="legend" aria-hidden="true">
                 <span><b class="dot raw"></b>GPS fixes</span>
                 <span><b class="line matched"></b>Matched route</span>
-                <span><b class="line truth"></b>Driven route</span>
+                <span><b class="line truth"></b><span id="legend-truth">Driven route</span></span>
               </div>
-              <label class="slider">Noise <output id="noise-out">12 m</output><input id="noise" type="range" min="2" max="30" value="12" /></label>
-              <label class="slider">Spacing <output id="spacing-out">20 m</output><input id="spacing" type="range" min="8" max="60" value="20" /></label>
+              <label class="slider drive-only">Noise <output id="noise-out">12 m</output><input id="noise" type="range" min="2" max="30" value="12" /></label>
+              <label class="slider drive-only">Spacing <output id="spacing-out">20 m</output><input id="spacing" type="range" min="8" max="60" value="20" /></label>
+              <p class="draw-hint draw-only">Click or tap the map to place GPS points in the order they were driven. Drag a point to move it. The route updates after every change.</p>
               <div class="demo-stats" aria-live="polite">
                 <div><span>Points</span><strong id="stat-points">–</strong></div>
                 <div><span>Matched in</span><strong id="stat-time">–</strong></div>
-                <div><span>Typical error</span><strong id="stat-error">–</strong></div>
+                <div><span id="stat-third-label">Typical error</span><strong id="stat-third">–</strong></div>
               </div>
-              <button id="new-route" class="btn primary small" type="button">Drive a new route</button>
+              <div class="demo-actions">
+                <button id="new-route" class="btn primary small drive-only" type="button">Drive a new route</button>
+                <button id="undo" class="btn small draw-only" type="button" disabled>Undo</button>
+                <button id="clear" class="btn small draw-only" type="button" disabled>Clear</button>
+              </div>
             </div>
           </div>
         </div>
@@ -72,12 +83,19 @@
 
       <section class="band" id="quick-start">
         <div class="wrap">
-          <h2>Quick start in TypeScript or PHP</h2>
-          <p class="sub">Give it road lines and GPS points; get back the path on the road, point by point. Both languages read the same fixtures in CI, so a trace matches the same way on the client and the server.</p>
+          <h2>Quick start in JavaScript, TypeScript or PHP</h2>
+          <p class="sub">Give it road lines and GPS points; get back the path on the road, point by point. The npm package runs from plain JavaScript with <code>import</code> or <code>require</code>, from a script tag with no build step, and ships its own TypeScript types.</p>
           <div class="code-grid">
             <figure class="code">
-              <div class="code-head"><span>TypeScript</span><button type="button" class="copy-code">Copy</button></div>
-              <pre><code>import { buildNetwork, matchCoordinates } from 'route-map-matching';
+              <div class="code-head tabbed">
+                <div class="code-tabs" role="tablist" aria-label="JavaScript setup">
+                  <button type="button" role="tab" id="tab-esm" aria-controls="qs-esm" aria-selected="true">JavaScript</button>
+                  <button type="button" role="tab" id="tab-browser" aria-controls="qs-browser" aria-selected="false" tabindex="-1">Browser</button>
+                  <button type="button" role="tab" id="tab-ts" aria-controls="qs-ts" aria-selected="false" tabindex="-1">TypeScript</button>
+                </div>
+                <button type="button" class="copy-code">Copy</button>
+              </div>
+              <pre id="qs-esm" role="tabpanel" aria-labelledby="tab-esm"><code>import { buildNetwork, matchCoordinates } from 'route-map-matching';
 
 const network = buildNetwork([
   {
@@ -88,6 +106,30 @@ const network = buildNetwork([
 ]);
 
 const route = matchCoordinates(gpsPoints, network);</code></pre>
+              <pre id="qs-browser" role="tabpanel" aria-labelledby="tab-browser" hidden><code>&lt;script type="module"&gt;
+import { buildNetwork, matchCoordinates } from
+  'https://cdn.jsdelivr.net/npm/route-map-matching@0.1/dist/index.js';
+
+const network = buildNetwork([
+  [[106.822, -6.175], [106.830, -6.174]],
+  [[106.830, -6.174], [106.830, -6.180]],
+]);
+
+const route = matchCoordinates(gpsPoints, network);
+&lt;/script&gt;</code></pre>
+              <pre id="qs-ts" role="tabpanel" aria-labelledby="tab-ts" hidden><code>import { buildNetwork, matchPoints } from 'route-map-matching';
+import type { MatchedPoint, RoadInput } from 'route-map-matching';
+
+const roads: RoadInput[] = [
+  { coordinates: [[106.822, -6.175], [106.830, -6.174]], oneway: 1 },
+  [[106.830, -6.174], [106.830, -6.180]],
+];
+
+const network = buildNetwork(roads);
+const matched: MatchedPoint[] = matchPoints(
+  gpsPoints.map(([lng, lat]) =&gt; ({ lng, lat })),
+  network,
+);</code></pre>
             </figure>
             <figure class="code">
               <div class="code-head"><span>PHP</span><button type="button" class="copy-code">Copy</button></div>
@@ -117,11 +159,11 @@ const { coordinates, complete } = await tiles.match(gpsPoints);</code></pre>
 
       <section id="api">
         <div class="wrap">
-          <h2>API reference for both languages</h2>
-          <p class="sub">Every function has the same name and the same result in TypeScript and PHP. Coordinates are <code>[lng, lat]</code> in degrees.</p>
+          <h2>API reference for JavaScript and PHP</h2>
+          <p class="sub">Every function has the same name and the same result in JavaScript, TypeScript and PHP. Coordinates are <code>[lng, lat]</code> in degrees.</p>
           <div class="table-scroll">
             <table class="api">
-              <thead><tr><th>TypeScript</th><th>PHP</th><th>Returns</th></tr></thead>
+              <thead><tr><th>JavaScript and TypeScript</th><th>PHP</th><th>Returns</th></tr></thead>
               <tbody>
                 <tr><td><code>buildNetwork(roads)</code></td><td><code>Network::build($roads)</code></td><td>A road graph you can reuse for many traces.</td></tr>
                 <tr><td><code>matchPoints(points, network, options)</code></td><td><code>Matcher::matchPoints($points, $network, $options)</code></td><td>One entry per input point: <code>position</code>, the road <code>path</code> before it, <code>skipped</code> and <code>matched</code>.</td></tr>
