@@ -56,8 +56,8 @@ The files in `dist` are plain ES modules with no dependencies, so a CDN can serv
 
 ```html
 <script type="module">
-  import { buildNetwork, matchCoordinates } from 'https://cdn.jsdelivr.net/npm/route-map-matching@0.1/dist/index.js';
-  import { createTileSource } from 'https://cdn.jsdelivr.net/npm/route-map-matching@0.1/dist/tiles/index.js';
+  import { buildNetwork, matchCoordinates } from 'https://cdn.jsdelivr.net/npm/route-map-matching@1/dist/index.js';
+  import { createTileSource } from 'https://cdn.jsdelivr.net/npm/route-map-matching@1/dist/tiles/index.js';
 
   const network = buildNetwork(roads);
   const route = matchCoordinates(gpsPoints, network);

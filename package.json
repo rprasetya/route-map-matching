@@ -1,6 +1,6 @@
 {
   "name": "route-map-matching",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Fast, dependency-free GPS map matching: snap noisy GPS traces onto a road network with a hidden Markov model, in the browser, Node.js and PHP.",
   "keywords": [
     "map-matching",
