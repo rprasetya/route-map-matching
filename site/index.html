@@ -3,32 +3,70 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>route-map-matching: GPS map matching for JavaScript and PHP</title>
-    <meta name="description" content="Snap noisy GPS traces onto real roads with a hidden Markov model. No server, no dependencies, identical results in the browser, Node.js and PHP." />
-    <meta property="og:title" content="route-map-matching" />
-    <meta property="og:description" content="GPS map matching for JavaScript and PHP. Over 100,000 points per second in Node.js, no server needed." />
+    <title data-i18n="meta.title">route-map-matching: GPS map matching for JavaScript and PHP</title>
+    <meta name="description" content="Snap noisy GPS traces onto real roads with a hidden Markov model. No server, no dependencies, identical results in the browser, Node.js and PHP." data-i18n-attr="content:meta.description" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <meta name="author" content="Raya Prasetya" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="route-map-matching" />
+    <meta property="og:title" content="route-map-matching: GPS map matching for JavaScript and PHP" data-i18n-attr="content:meta.title" />
+    <meta property="og:description" content="GPS map matching for JavaScript and PHP. Over 100,000 points per second in Node.js, no server needed." data-i18n-attr="content:meta.ogDescription" />
+    <!--seo-->
     <meta name="theme-color" content="#f6f5f2" />
     <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2317181b'/%3E%3Cpath d='M7 23c4-1 5-8 9-9s5 4 9-5' stroke='%23e0a325' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E" />
+    <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    <script>
+      (function () {
+        try {
+          if (document.documentElement.getAttribute('data-page-lang') !== 'en') return;
+          var supported = ['id', 'zh', 'hi', 'es', 'fr', 'ar', 'pt'];
+          var saved = null;
+          try {
+            saved = localStorage.getItem('rmm.lang');
+          } catch (e) {}
+          if (saved === 'en') return;
+          var lang = supported.indexOf(saved) >= 0 ? saved : null;
+          if (!lang) {
+            var list = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ''];
+            for (var i = 0; i < list.length; i += 1) {
+              var code = String(list[i]).toLowerCase().slice(0, 2);
+              if (code === 'en') return;
+              if (supported.indexOf(code) >= 0) {
+                lang = code;
+                break;
+              }
+            }
+          }
+          if (lang && !/bot|crawler|spider|lighthouse|headless/i.test(navigator.userAgent)) location.replace('/' + lang + '/' + location.hash);
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
-    <a class="skip" href="#main">Skip to content</a>
+    <a class="skip" href="#main" data-i18n="nav.skip">Skip to content</a>
     <header class="nav">
       <div class="wrap nav-row">
-        <a class="brand" href="#top" aria-label="route-map-matching home">
+        <a class="brand" href="#top" aria-label="route-map-matching home" data-i18n-attr="aria-label:nav.home">
           <svg viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="7" /><path d="M7 23c4-1 5-8 9-9s5 4 9-5" /></svg>
           <span>route-map-matching</span>
         </a>
-        <nav aria-label="Sections">
-          <a href="#quick-start">Quick start</a>
-          <a href="#api">API</a>
-          <a href="#how">How it works</a>
-          <a href="#benchmarks">Benchmarks</a>
+        <div class="nav-end">
+          <nav aria-label="Sections" data-i18n-attr="aria-label:nav.sections">
+            <a href="#quick-start" data-i18n="nav.quickStart">Quick start</a>
+            <a href="#api" data-i18n="nav.api">API</a>
+            <a href="#how" data-i18n="nav.how">How it works</a>
+            <a href="#benchmarks" data-i18n="nav.benchmarks">Benchmarks</a>
+          </nav>
+          <label class="lang">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z" /></svg>
+            <span class="lang-name">English</span><span class="lang-code">EN</span>
+            <select id="lang" aria-label="Language" data-i18n-attr="aria-label:nav.language"><!--lang-options--></select>
+          </label>
           <a class="gh" href="https://github.com/rprasetya/route-map-matching">GitHub</a>
-        </nav>
+        </div>
       </div>
     </header>
 
@@ -36,45 +74,45 @@
       <section class="hero" id="top">
         <div class="wrap hero-grid">
           <div class="hero-copy">
-            <p class="eyebrow">Open source · MIT · JavaScript, TypeScript and PHP</p>
-            <h1>Snap GPS traces to the roads they were driven on.</h1>
-            <p class="lead">A hidden Markov model turns noisy fixes into the route a vehicle took. It runs in the browser, Node.js and PHP with the same results, no routing server and no dependencies.</p>
-            <p class="fact"><strong>Over 100,000 points per second</strong> in Node.js 22, up to eight times faster than the engine it grew out of.</p>
-            <div class="install" role="group" aria-label="Install commands">
-              <button class="cmd" type="button" data-copy="npm i route-map-matching"><span>npm i route-map-matching</span><i aria-hidden="true">Copy</i></button>
-              <button class="cmd" type="button" data-copy="composer require rprasetya/route-map-matching"><span>composer require rprasetya/route-map-matching</span><i aria-hidden="true">Copy</i></button>
+            <p class="eyebrow" data-i18n="hero.eyebrow">Open source · MIT · JavaScript, TypeScript and PHP</p>
+            <h1 data-i18n="hero.title">Snap GPS traces to the roads they were driven on.</h1>
+            <p class="lead" data-i18n="hero.lead">A hidden Markov model turns noisy fixes into the route a vehicle took. It runs in the browser, Node.js and PHP with the same results, no routing server and no dependencies.</p>
+            <p class="fact" data-i18n-html="hero.fact"><strong>Over 100,000 points per second</strong> in Node.js 22, up to eight times faster than the engine it grew out of.</p>
+            <div class="install" role="group" aria-label="Install commands" data-i18n-attr="aria-label:hero.install">
+              <button class="cmd" type="button" data-copy="npm i route-map-matching"><span>npm i route-map-matching</span><i aria-hidden="true" data-i18n="common.copy">Copy</i></button>
+              <button class="cmd" type="button" data-copy="composer require rprasetya/route-map-matching"><span>composer require rprasetya/route-map-matching</span><i aria-hidden="true" data-i18n="common.copy">Copy</i></button>
             </div>
             <div class="actions">
-              <a class="btn primary" href="#quick-start">Read the quick start</a>
-              <a class="btn" href="https://github.com/rprasetya/route-map-matching">Open the repository</a>
+              <a class="btn primary" href="#quick-start" data-i18n="hero.quickStart">Read the quick start</a>
+              <a class="btn" href="https://github.com/rprasetya/route-map-matching" data-i18n="hero.repo">Open the repository</a>
             </div>
           </div>
-          <div class="demo" aria-label="Live map matching demo">
+          <div class="demo" aria-label="Live map matching demo" data-i18n-attr="aria-label:demo.label">
             <div class="demo-stage">
               <div id="demo-map" class="demo-map"></div>
-              <div class="mode" role="group" aria-label="Demo mode">
-                <button type="button" data-mode-option="drive" aria-pressed="true">Simulated drive</button>
-                <button type="button" data-mode-option="draw" aria-pressed="false">Place points</button>
+              <div class="mode" role="group" aria-label="Demo mode" data-i18n-attr="aria-label:demo.modes">
+                <button type="button" data-mode-option="drive" aria-pressed="true" data-i18n="demo.modeDrive">Simulated drive</button>
+                <button type="button" data-mode-option="draw" aria-pressed="false" data-i18n="demo.modeDraw">Place points</button>
               </div>
             </div>
             <div id="demo-panel" class="demo-panel" data-mode="drive">
               <div class="legend" aria-hidden="true">
-                <span><b class="dot raw"></b>GPS fixes</span>
-                <span><b class="line matched"></b>Matched route</span>
-                <span><b class="line truth"></b><span id="legend-truth">Driven route</span></span>
+                <span><b class="dot raw"></b><span data-i18n="demo.legendFixes">GPS fixes</span></span>
+                <span><b class="line matched"></b><span data-i18n="demo.legendMatched">Matched route</span></span>
+                <span><b class="line truth"></b><span id="legend-truth" data-i18n="demo.legendDriven">Driven route</span></span>
               </div>
-              <label class="slider drive-only">Noise <output id="noise-out">12 m</output><input id="noise" type="range" min="2" max="30" value="12" /></label>
-              <label class="slider drive-only">Spacing <output id="spacing-out">20 m</output><input id="spacing" type="range" min="8" max="60" value="20" /></label>
-              <p class="draw-hint draw-only">Click or tap the map to place GPS points in the order they were driven. Drag a point to move it. The route updates after every change.</p>
+              <label class="slider drive-only"><span data-i18n="demo.noise">Noise</span> <output id="noise-out">12 m</output><input id="noise" type="range" min="2" max="30" value="12" /></label>
+              <label class="slider drive-only"><span data-i18n="demo.spacing">Spacing</span> <output id="spacing-out">20 m</output><input id="spacing" type="range" min="8" max="60" value="20" /></label>
+              <p class="draw-hint draw-only" data-i18n="demo.hint">Click or tap the map to place GPS points in the order they were driven. Drag a point to move it. The route updates after every change.</p>
               <div class="demo-stats" aria-live="polite">
-                <div><span>Points</span><strong id="stat-points">–</strong></div>
-                <div><span>Matched in</span><strong id="stat-time">–</strong></div>
-                <div><span id="stat-third-label">Typical error</span><strong id="stat-third">–</strong></div>
+                <div><span data-i18n="demo.points">Points</span><strong id="stat-points">–</strong></div>
+                <div><span data-i18n="demo.time">Matched in</span><strong id="stat-time">–</strong></div>
+                <div><span id="stat-third-label" data-i18n="demo.error">Typical error</span><strong id="stat-third">–</strong></div>
               </div>
               <div class="demo-actions">
-                <button id="new-route" class="btn primary small drive-only" type="button">Drive a new route</button>
-                <button id="undo" class="btn small draw-only" type="button" disabled>Undo</button>
-                <button id="clear" class="btn small draw-only" type="button" disabled>Clear</button>
+                <button id="new-route" class="btn primary small drive-only" type="button" data-i18n="demo.newRoute">Drive a new route</button>
+                <button id="undo" class="btn small draw-only" type="button" disabled data-i18n="demo.undo">Undo</button>
+                <button id="clear" class="btn small draw-only" type="button" disabled data-i18n="demo.clear">Clear</button>
               </div>
             </div>
           </div>
@@ -83,17 +121,17 @@
 
       <section class="band" id="quick-start">
         <div class="wrap">
-          <h2>Quick start in JavaScript, TypeScript or PHP</h2>
-          <p class="sub">Give it road lines and GPS points; get back the path on the road, point by point. The npm package runs from plain JavaScript with <code>import</code> or <code>require</code>, from a script tag with no build step, and ships its own TypeScript types.</p>
+          <h2 data-i18n="quick.title">Quick start in JavaScript, TypeScript or PHP</h2>
+          <p class="sub" data-i18n-html="quick.sub">Give it road lines and GPS points; get back the path on the road, point by point. The npm package runs from plain JavaScript with <code>import</code> or <code>require</code>, from a script tag with no build step, and ships its own TypeScript types.</p>
           <div class="code-grid">
             <figure class="code">
               <div class="code-head tabbed">
-                <div class="code-tabs" role="tablist" aria-label="JavaScript setup">
+                <div class="code-tabs" role="tablist" aria-label="JavaScript setup" data-i18n-attr="aria-label:quick.tabs">
                   <button type="button" role="tab" id="tab-esm" aria-controls="qs-esm" aria-selected="true">JavaScript</button>
-                  <button type="button" role="tab" id="tab-browser" aria-controls="qs-browser" aria-selected="false" tabindex="-1">Browser</button>
+                  <button type="button" role="tab" id="tab-browser" aria-controls="qs-browser" aria-selected="false" tabindex="-1" data-i18n="quick.browser">Browser</button>
                   <button type="button" role="tab" id="tab-ts" aria-controls="qs-ts" aria-selected="false" tabindex="-1">TypeScript</button>
                 </div>
-                <button type="button" class="copy-code">Copy</button>
+                <button type="button" class="copy-code" data-i18n="common.copy">Copy</button>
               </div>
               <pre id="qs-esm" role="tabpanel" aria-labelledby="tab-esm"><code>import { buildNetwork, matchCoordinates } from 'route-map-matching';
 
@@ -132,7 +170,7 @@ const matched: MatchedPoint[] = matchPoints(
 );</code></pre>
             </figure>
             <figure class="code">
-              <div class="code-head"><span>PHP</span><button type="button" class="copy-code">Copy</button></div>
+              <div class="code-head"><span>PHP</span><button type="button" class="copy-code" data-i18n="common.copy">Copy</button></div>
               <pre><code>use RouteMapMatching\Matcher;
 use RouteMapMatching\Network;
 
@@ -148,7 +186,7 @@ $route = Matcher::matchCoordinates($gpsPoints, $network);</code></pre>
             </figure>
           </div>
           <figure class="code wide">
-            <div class="code-head"><span>Roads straight from your map's vector tiles</span><button type="button" class="copy-code">Copy</button></div>
+            <div class="code-head"><span data-i18n="quick.tiles">Roads straight from your map's vector tiles</span><button type="button" class="copy-code" data-i18n="common.copy">Copy</button></div>
             <pre><code>import { createTileSource } from 'route-map-matching/tiles';
 
 const tiles = createTileSource({ url: 'https://tiles.example.org/{z}/{x}/{y}.pbf' });
@@ -159,28 +197,28 @@ const { coordinates, complete } = await tiles.match(gpsPoints);</code></pre>
 
       <section id="api">
         <div class="wrap">
-          <h2>API reference for JavaScript and PHP</h2>
-          <p class="sub">Every function has the same name and the same result in JavaScript, TypeScript and PHP. Coordinates are <code>[lng, lat]</code> in degrees.</p>
+          <h2 data-i18n="api.title">API reference for JavaScript and PHP</h2>
+          <p class="sub" data-i18n-html="api.sub">Every function has the same name and the same result in JavaScript, TypeScript and PHP. Coordinates are <code>[lng, lat]</code> in degrees.</p>
           <div class="table-scroll">
             <table class="api">
-              <thead><tr><th>JavaScript and TypeScript</th><th>PHP</th><th>Returns</th></tr></thead>
+              <thead><tr><th data-i18n="api.thJs">JavaScript and TypeScript</th><th>PHP</th><th data-i18n="api.thReturns">Returns</th></tr></thead>
               <tbody>
-                <tr><td><code>buildNetwork(roads)</code></td><td><code>Network::build($roads)</code></td><td>A road graph you can reuse for many traces.</td></tr>
-                <tr><td><code>matchPoints(points, network, options)</code></td><td><code>Matcher::matchPoints($points, $network, $options)</code></td><td>One entry per input point: <code>position</code>, the road <code>path</code> before it, <code>skipped</code> and <code>matched</code>.</td></tr>
-                <tr><td><code>matchCoordinates(coordinates, network, options)</code></td><td><code>Matcher::matchCoordinates(...)</code></td><td>The matched line as <code>[lng, lat]</code> pairs, ready to draw.</td></tr>
-                <tr><td><code>snapToRoad(network, [lng, lat], radius)</code></td><td><code>Matcher::snapToRoad(...)</code></td><td>The nearest point on a road, or <code>null</code>.</td></tr>
-                <tr><td><code>createTileSource({ url })</code></td><td>–</td><td>Downloads, caches and decodes Mapbox vector tiles, then matches.</td></tr>
-                <tr><td><code>isLeftHandTraffic(lng, lat)</code></td><td><code>LeftHandTraffic::contains(...)</code></td><td>Whether traffic keeps left at that spot.</td></tr>
+                <tr><td><code>buildNetwork(roads)</code></td><td><code>Network::build($roads)</code></td><td data-i18n="api.build">A road graph you can reuse for many traces.</td></tr>
+                <tr><td><code>matchPoints(points, network, options)</code></td><td><code>Matcher::matchPoints($points, $network, $options)</code></td><td data-i18n-html="api.points">One entry per input point: <code>position</code>, the road <code>path</code> before it, <code>skipped</code> and <code>matched</code>.</td></tr>
+                <tr><td><code>matchCoordinates(coordinates, network, options)</code></td><td><code>Matcher::matchCoordinates(...)</code></td><td data-i18n-html="api.coordinates">The matched line as <code>[lng, lat]</code> pairs, ready to draw.</td></tr>
+                <tr><td><code>snapToRoad(network, [lng, lat], radius)</code></td><td><code>Matcher::snapToRoad(...)</code></td><td data-i18n-html="api.snap">The nearest point on a road, or <code>null</code>.</td></tr>
+                <tr><td><code>createTileSource({ url })</code></td><td>–</td><td data-i18n="api.tiles">Downloads, caches and decodes Mapbox vector tiles, then matches.</td></tr>
+                <tr><td><code>isLeftHandTraffic(lng, lat)</code></td><td><code>LeftHandTraffic::contains(...)</code></td><td data-i18n="api.side">Whether traffic keeps left at that spot.</td></tr>
               </tbody>
             </table>
           </div>
           <div class="table-scroll">
             <table class="api options">
-              <thead><tr><th>Option</th><th>Default</th><th>What it does</th></tr></thead>
+              <thead><tr><th data-i18n="api.thOption">Option</th><th data-i18n="api.thDefault">Default</th><th data-i18n="api.thWhat">What it does</th></tr></thead>
               <tbody>
-                <tr><td><code>radius</code></td><td>50 m</td><td>How far from a fix a road may be. Widens to 100 m and 200 m when nothing is closer.</td></tr>
-                <tr><td><code>include</code></td><td>every point</td><td>Booleans or a function. Leave parked or stationary fixes out of the match.</td></tr>
-                <tr><td><code>leftHandTraffic</code></td><td><code>'auto'</code></td><td>Looks up the side of the road for each fix in 75 countries and territories. Pass <code>true</code>, <code>false</code>, an array or a function to override.</td></tr>
+                <tr><td><code>radius</code></td><td>50 m</td><td data-i18n="api.radius">How far from a fix a road may be. Widens to 100 m and 200 m when nothing is closer.</td></tr>
+                <tr><td><code>include</code></td><td data-i18n="api.everyPoint">every point</td><td data-i18n="api.include">Booleans or a function. Leave parked or stationary fixes out of the match.</td></tr>
+                <tr><td><code>leftHandTraffic</code></td><td><code>'auto'</code></td><td data-i18n-html="api.leftHand">Looks up the side of the road for each fix in 75 countries and territories. Pass <code>true</code>, <code>false</code>, an array or a function to override.</td></tr>
               </tbody>
             </table>
           </div>
@@ -189,28 +227,28 @@ const { coordinates, complete } = await tiles.match(gpsPoints);</code></pre>
 
       <section class="band" id="how">
         <div class="wrap">
-          <h2>How a trace becomes a route</h2>
-          <p class="sub">The same four stages run in both languages, tuned on trips from a production fleet tracker.</p>
+          <h2 data-i18n="how.title">How a trace becomes a route</h2>
+          <p class="sub" data-i18n="how.sub">The same four stages run in both languages, tuned on trips from a production fleet tracker.</p>
           <ol class="steps">
             <li>
               <svg viewBox="0 0 120 64" aria-hidden="true"><path class="road" d="M4 44h112" /><path class="road" d="M4 20h112" /><circle class="fix" cx="60" cy="32" r="5" /><path class="probe" d="M60 32V20M60 32v12" /></svg>
-              <h3>Candidates</h3>
-              <p>Up to six road positions near each fix, scored by distance, heading, road class, one-way rules and the side traffic keeps to.</p>
+              <h3 data-i18n="how.candidates">Candidates</h3>
+              <p data-i18n="how.candidatesText">Up to six road positions near each fix, scored by distance, heading, road class, one-way rules and the side traffic keeps to.</p>
             </li>
             <li>
               <svg viewBox="0 0 120 64" aria-hidden="true"><circle class="node" cx="16" cy="32" r="5" /><circle class="node" cx="104" cy="32" r="5" /><path class="hop" d="M21 32c20-26 58-26 78 0" /><path class="hop dim" d="M21 32c20 26 58 26 78 0" /></svg>
-              <h3>Transitions</h3>
-              <p>A bounded Dijkstra search measures the road distance between candidates. Routes about as long as the straight GPS hop score best.</p>
+              <h3 data-i18n="how.transitions">Transitions</h3>
+              <p data-i18n="how.transitionsText">A bounded Dijkstra search measures the road distance between candidates. Routes about as long as the straight GPS hop score best.</p>
             </li>
             <li>
               <svg viewBox="0 0 120 64" aria-hidden="true"><path class="lattice" d="M14 14l46 18 46-18M14 50l46-18 46 18" /><path class="best" d="M14 14l46 18 46 18" /><circle class="node" cx="14" cy="14" r="4" /><circle class="node" cx="60" cy="32" r="4" /><circle class="node" cx="106" cy="50" r="4" /></svg>
-              <h3>Viterbi</h3>
-              <p>The cheapest chain of candidates across the whole trip wins, so one bad fix cannot drag the route onto a parallel street.</p>
+              <h3 data-i18n="how.viterbi">Viterbi</h3>
+              <p data-i18n="how.viterbiText">The cheapest chain of candidates across the whole trip wins, so one bad fix cannot drag the route onto a parallel street.</p>
             </li>
             <li>
               <svg viewBox="0 0 120 64" aria-hidden="true"><path class="road" d="M8 46h104" /><path class="spike" d="M40 46l12-28 12 28" /><path class="best" d="M8 46h104" /></svg>
-              <h3>Clean-up</h3>
-              <p>Gaps are routed, detours straightened and false U-turns removed, which keeps signal loss and multipath from showing up as zigzags.</p>
+              <h3 data-i18n="how.cleanup">Clean-up</h3>
+              <p data-i18n="how.cleanupText">Gaps are routed, detours straightened and false U-turns removed, which keeps signal loss and multipath from showing up as zigzags.</p>
             </li>
           </ol>
         </div>
@@ -218,12 +256,12 @@ const { coordinates, complete } = await tiles.match(gpsPoints);</code></pre>
 
       <section id="benchmarks">
         <div class="wrap">
-          <h2>Benchmarks on a 40 by 40 block city grid</h2>
-          <p class="sub">Median of seven runs in Node.js and three in PHP on a laptop, 3,280 road segments, GPS noise of 7 m. Output matches the original engine point for point.</p>
+          <h2 data-i18n="bench.title">Benchmarks on a 40 by 40 block city grid</h2>
+          <p class="sub" data-i18n="bench.sub">Median of seven runs in Node.js and three in PHP on a laptop, 3,280 road segments, GPS noise of 7 m. Output matches the original engine point for point.</p>
           <div class="bench-grid">
             <div class="table-scroll">
               <table class="api bench">
-                <thead><tr><th>GPS points</th><th>Original engine</th><th>Node.js 22</th><th>Speed-up</th></tr></thead>
+                <thead><tr><th data-i18n="bench.points">GPS points</th><th data-i18n="bench.original">Original engine</th><th>Node.js 22</th><th data-i18n="bench.speedup">Speed-up</th></tr></thead>
                 <tbody>
                   <tr><td>1,000</td><td>71 ms</td><td>16 ms</td><td>4.5×</td></tr>
                   <tr><td>5,000</td><td>315 ms</td><td>47 ms</td><td>6.7×</td></tr>
@@ -233,7 +271,7 @@ const { coordinates, complete } = await tiles.match(gpsPoints);</code></pre>
             </div>
             <div class="table-scroll">
               <table class="api bench">
-                <thead><tr><th>GPS points</th><th>PHP 8.4</th><th>PHP 8.4 with JIT</th></tr></thead>
+                <thead><tr><th data-i18n="bench.points">GPS points</th><th>PHP 8.4</th><th data-i18n="bench.jit">PHP 8.4 with JIT</th></tr></thead>
                 <tbody>
                   <tr><td>1,000</td><td>89 ms</td><td>55 ms</td></tr>
                   <tr><td>5,000</td><td>529 ms</td><td>268 ms</td></tr>
@@ -242,30 +280,30 @@ const { coordinates, complete } = await tiles.match(gpsPoints);</code></pre>
               </table>
             </div>
           </div>
-          <p class="note">Run <code>npm run bench</code> and <code>composer bench</code> to measure on your own hardware.</p>
+          <p class="note" data-i18n-html="bench.note">Run <code>npm run bench</code> and <code>composer bench</code> to measure on your own hardware.</p>
         </div>
       </section>
 
       <section class="band" id="traffic-side">
         <div class="wrap side-grid">
           <div>
-            <h2>Keeps left where traffic keeps left</h2>
-            <p class="sub">On a divided road the two carriageways sit metres apart, closer than GPS noise. In the shaded countries the matcher leans toward the left lane, everywhere else it stays neutral. The boundaries come from Natural Earth and hold up at the Hong Kong and Shenzhen, Macau and Zhuhai, and Singapore and Johor borders.</p>
+            <h2 data-i18n="side.title">Keeps left where traffic keeps left</h2>
+            <p class="sub" data-i18n="side.sub">On a divided road the two carriageways sit metres apart, closer than GPS noise. In the shaded countries the matcher leans toward the left lane, everywhere else it stays neutral. The boundaries come from Natural Earth and hold up at the Hong Kong and Shenzhen, Macau and Zhuhai, and Singapore and Johor borders.</p>
             <ul class="facts">
-              <li><strong>75</strong> countries and territories</li>
-              <li><strong>32 KB</strong> gzipped, decoded on first use</li>
-              <li><strong>2 µs</strong> per lookup</li>
+              <li data-i18n-html="side.countries"><strong>75</strong> countries and territories</li>
+              <li data-i18n-html="side.size"><strong>32 KB</strong> gzipped, decoded on first use</li>
+              <li data-i18n-html="side.lookup"><strong>2 µs</strong> per lookup</li>
             </ul>
           </div>
-          <div id="side-map" class="side-map" aria-label="Map of left-hand traffic regions"></div>
+          <div id="side-map" class="side-map" aria-label="Map of left-hand traffic regions" data-i18n-attr="aria-label:side.map"></div>
         </div>
       </section>
     </main>
 
     <footer class="foot">
       <div class="wrap foot-row">
-        <p>MIT licence. Built from the map matching engine of a fleet tracking product.</p>
-        <p class="credits">Map data © OpenStreetMap contributors, tiles by OpenFreeMap and OpenMapTiles. Country borders from Natural Earth.</p>
+        <p data-i18n="foot.licence">MIT licence. Built from the map matching engine of a fleet tracking product.</p>
+        <p class="credits" data-i18n="foot.credits">Map data © OpenStreetMap contributors, tiles by OpenFreeMap and OpenMapTiles. Country borders from Natural Earth.</p>
       </div>
     </footer>
     <script type="module" src="./src/main.ts"></script>

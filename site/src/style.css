@@ -52,7 +52,7 @@ a {
 
 .skip {
   position: fixed;
-  left: 12px;
+  inset-inline-start: 12px;
   top: 12px;
   z-index: 100;
   padding: 10px 14px;
@@ -102,6 +102,10 @@ a {
   letter-spacing: -0.01em;
 }
 
+.brand span {
+  white-space: nowrap;
+}
+
 .brand svg {
   width: 28px;
   height: 28px;
@@ -138,10 +142,72 @@ a {
   background: rgba(23, 24, 27, 0.05);
 }
 
-.nav nav a.gh {
+.nav-end {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.nav .gh {
+  padding: 10px 12px;
+  border-radius: 8px;
   color: var(--ink);
+  font-size: 14.5px;
   font-weight: 500;
+  text-decoration: none;
   box-shadow: inset 0 0 0 1px var(--line-strong);
+  transition: background 160ms ease;
+}
+
+.nav .gh:hover {
+  background: rgba(23, 24, 27, 0.05);
+}
+
+.lang {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  padding: 0 12px;
+  border-radius: 8px;
+  color: var(--muted);
+  font-size: 14.5px;
+  cursor: pointer;
+  transition: color 160ms ease, background 160ms ease;
+}
+
+.lang:hover {
+  color: var(--ink);
+  background: rgba(23, 24, 27, 0.05);
+}
+
+.lang:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.lang svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
+
+.lang-code {
+  display: none;
+  font-weight: 500;
+}
+
+.lang select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  opacity: 0;
+  cursor: pointer;
+  font-size: 16px;
 }
 
 main > section {
@@ -195,8 +261,8 @@ h3 {
 
 .fact {
   margin: 18px 0 0;
-  padding-left: 14px;
-  border-left: 3px solid var(--accent);
+  padding-inline-start: 14px;
+  border-inline-start: 3px solid var(--accent);
   font-size: 15.5px;
 }
 
@@ -220,6 +286,34 @@ h3 {
 code {
   font-size: 0.92em;
   color: var(--ink);
+  direction: ltr;
+  unicode-bidi: isolate;
+}
+
+[dir='rtl'] .demo-stats strong,
+[dir='rtl'] .slider output {
+  direction: ltr;
+  text-align: right;
+}
+
+:lang(ar) :is(h1, h2, h3),
+:lang(hi) :is(h1, h2, h3),
+:lang(zh-Hans) :is(h1, h2, h3) {
+  letter-spacing: 0;
+}
+
+:lang(ar) h1,
+:lang(hi) h1 {
+  line-height: 1.3;
+}
+
+:lang(zh-Hans) h1 {
+  line-height: 1.2;
+}
+
+:lang(ar) h2,
+:lang(hi) h2 {
+  line-height: 1.35;
 }
 
 p code,
@@ -263,6 +357,7 @@ td code {
   color: var(--ink);
   font-size: 13.5px;
   text-align: left;
+  direction: ltr;
   cursor: pointer;
   transition: box-shadow 160ms ease, transform 160ms ease;
 }
@@ -551,7 +646,8 @@ td code {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 8px 8px 16px;
+  padding: 8px;
+  padding-inline-start: 16px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
   color: #b9bcc2;
   font-size: 13px;
@@ -559,7 +655,7 @@ td code {
 
 .code-head.tabbed {
   gap: 12px;
-  padding-left: 8px;
+  padding-inline-start: 8px;
 }
 
 .code-tabs {
@@ -621,6 +717,8 @@ td code {
 }
 
 .code pre {
+  direction: ltr;
+  text-align: left;
   margin: 0;
   padding: 18px 20px 20px;
   overflow-x: auto;
@@ -653,7 +751,7 @@ td code {
 .api th,
 .api td {
   padding: 12px 16px;
-  text-align: left;
+  text-align: start;
   vertical-align: top;
   border-bottom: 1px solid var(--line);
 }
@@ -676,6 +774,7 @@ td code {
 .api td code {
   background: none;
   padding: 0;
+  white-space: nowrap;
 }
 
 .bench td,
@@ -905,8 +1004,23 @@ td code {
 }
 
 @media (max-width: 760px) {
-  .nav nav a:not(.gh) {
+  .nav nav {
     display: none;
+  }
+  .nav-row {
+    gap: 12px;
+  }
+  .nav-end {
+    gap: 4px;
+  }
+  .lang-name {
+    display: none;
+  }
+  .lang-code {
+    display: inline;
+  }
+  .lang {
+    padding: 0 10px;
   }
   .code-grid {
     grid-template-columns: minmax(0, 1fr);

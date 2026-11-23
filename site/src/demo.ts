@@ -1,6 +1,7 @@
 import maplibregl, { type GeoJSONSource, type Map as MapLibreMap } from 'maplibre-gl';
 import { matchPoints, type LngLat, type Network } from 'route-map-matching';
 import { createTileSource, type TileSource } from 'route-map-matching/tiles';
+import { t } from './i18n';
 
 const STYLE = 'https://tiles.openfreemap.org/styles/positron';
 const START: [number, number] = [106.8272, -6.1795];
@@ -248,7 +249,7 @@ export function startDemo(): void {
       renderDraw();
     } catch (error) {
       console.error(error);
-      if (seq === loadSeq && mode === 'draw') $('stat-third').textContent = 'Road tiles unavailable';
+      if (seq === loadSeq && mode === 'draw') $('stat-third').textContent = t('demo.unavailable');
     }
   };
 
@@ -262,7 +263,7 @@ export function startDemo(): void {
     if (busy || !source) return;
     busy = true;
     button.disabled = true;
-    button.textContent = 'Loading roads…';
+    button.textContent = t('demo.loading');
     try {
       const c = map.getCenter();
       const center: [number, number] = [c.lng, c.lat];
@@ -286,11 +287,11 @@ export function startDemo(): void {
       }
     } catch (error) {
       console.error(error);
-      if (mode === 'drive') $('stat-third').textContent = 'Road tiles unavailable';
+      if (mode === 'drive') $('stat-third').textContent = t('demo.unavailable');
     } finally {
       busy = false;
       button.disabled = false;
-      button.textContent = 'Drive a new route';
+      button.textContent = t('demo.newRoute');
     }
   };
 
@@ -299,8 +300,8 @@ export function startDemo(): void {
     mode = next;
     panel.dataset.mode = next;
     for (const option of modes) option.setAttribute('aria-pressed', String(option.dataset.modeOption === next));
-    $('legend-truth').textContent = next === 'drive' ? 'Driven route' : 'Point order';
-    $('stat-third-label').textContent = next === 'drive' ? 'Typical error' : 'Route length';
+    $('legend-truth').textContent = t(next === 'drive' ? 'demo.legendDriven' : 'demo.legendOrder');
+    $('stat-third-label').textContent = t(next === 'drive' ? 'demo.error' : 'demo.length');
     map.getCanvas().style.cursor = next === 'draw' ? 'crosshair' : '';
     if (map.getLayer('fixes')) {
       map.setPaintProperty('fixes', 'circle-radius', next === 'draw' ? 5.5 : 3.4);
@@ -397,7 +398,7 @@ export function startDemo(): void {
     const id = Object.keys(sources).find((k) => sources[k].type === 'vector');
     const tiles = id ? (map.getSource(id) as unknown as { tiles?: string[] }).tiles : undefined;
     if (!tiles?.length) {
-      $('stat-third').textContent = 'Road tiles unavailable';
+      $('stat-third').textContent = t('demo.unavailable');
       return;
     }
     source = createTileSource({ url: tiles[0], zoom: 14 });

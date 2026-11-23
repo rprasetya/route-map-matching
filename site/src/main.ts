@@ -3,25 +3,25 @@ import './style.css';
 import maplibregl from 'maplibre-gl';
 import { leftHandTrafficPolygons } from 'route-map-matching/traffic-side';
 import { startDemo } from './demo';
+import { languageMenu, t } from './i18n';
 
 function copyButtons(): void {
-  const flash = (el: HTMLElement, label: string) => {
-    const old = el.textContent;
-    el.textContent = label;
-    setTimeout(() => (el.textContent = old), 1400);
+  const flash = (el: HTMLElement) => {
+    el.textContent = t('common.copied');
+    setTimeout(() => (el.textContent = t('common.copy')), 1400);
   };
   document.querySelectorAll<HTMLButtonElement>('[data-copy]').forEach((b) => {
     b.addEventListener('click', async () => {
       await navigator.clipboard?.writeText(b.dataset.copy ?? '');
       const tag = b.querySelector('i');
-      if (tag) flash(tag, 'Copied');
+      if (tag) flash(tag);
     });
   });
   document.querySelectorAll<HTMLButtonElement>('.copy-code').forEach((b) => {
     b.addEventListener('click', async () => {
       const code = b.closest('.code')?.querySelector('pre:not([hidden]) code')?.textContent ?? '';
       await navigator.clipboard?.writeText(code);
-      flash(b, 'Copied');
+      flash(b);
     });
   });
 }
@@ -86,5 +86,6 @@ function sideMap(): void {
 
 copyButtons();
 codeTabs();
+languageMenu();
 startDemo();
 sideMap();

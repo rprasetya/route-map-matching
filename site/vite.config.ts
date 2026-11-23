@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
+import { i18n } from './i18n';
 
 const src = (path: string) => fileURLToPath(new URL(`../src/${path}`, import.meta.url));
 
@@ -15,6 +16,7 @@ export default defineConfig({
     ],
   },
   plugins: [
+    i18n(),
     {
       name: 'text-loader',
       enforce: 'pre',
